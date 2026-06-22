@@ -67,17 +67,26 @@ func (p *printer) SetActiveCert(id string) error {
 		return err
 	}
 
-	// submit initial form to change the cert
+	// submit initial form to change the cert (MFC-L2750DW field names)
 	data := url.Values{}
 	data.Set("pageid", "326")
 	data.Set("CSRFToken", csrfToken)
-	data.Set("B903", id)
-	// B91d always seems to be 1, but wasn't needed here
-	// Enable HTTPS for WebUI and IPP
-	data.Set("B86c", "1")
-	data.Set("B87e", "1")
-	// there are some other values here but don't set them (which should
-	// leave them as-is in most cases)
+	// certificate dropdown (<select name="Bb23">)
+	data.Set("Bb23", id)
+	// Preserve ALL currently-enabled protocols. An absent checkbox is treated
+	// as "off" by the firmware, so only flipping the HTTPS box (as upstream
+	// does) would risk disabling HTTP/IPP/WebServices. The L2750DW ships these
+	// enabled; we re-assert them so the only change is the certificate.
+	data.Set("Ba8c", "1")        // Web Based Management HTTPS (443)
+	data.Set("Ba8d", "1")        // Web Based Management HTTP  (80)
+	data.Set("Ba9e", "1")        // IPP HTTPS (443)
+	data.Set("ipp_ssl_used", "") // IPP secure helper (submitted empty)
+	data.Set("Ba9f", "1")        // IPP HTTP (80)
+	data.Set("Baa0", "1")        // IPP HTTP (631)
+	data.Set("Ba7d", "1")        // Web Services HTTP
+	data.Set("Bb20", "")
+	data.Set("Bb21", "")
+	data.Set("Bb3d", "0")
 
 	// get url & set path
 	u, err := url.ParseRequestURI(p.baseUrl)

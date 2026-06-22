@@ -75,13 +75,12 @@ func (p *printer) DeleteCert(id string) error {
 		return err
 	}
 
-	// first delete form
-	// form values
+	// first delete form (MFC-L2750DW field names)
 	data := url.Values{}
-	data.Set("pageid", "383")
+	data.Set("pageid", "388")
 	data.Set("CSRFToken", csrfToken)
-	data.Set("B8ea", "")
-	data.Set("B8fc", "")
+	data.Set("Bb0a", "")
+	data.Set("Bb1c", "")
 	data.Set("hidden_certificate_process_control", "1")
 	data.Set("hidden_certificate_idx", id)
 
@@ -123,13 +122,15 @@ func (p *printer) DeleteCert(id string) error {
 		return err
 	}
 
-	// second delete (confirmation) form
-	// form values
+	// second delete (confirmation) form. The confirm page's empty hidden
+	// field names differ from step 1 and weren't captured, so forward whatever
+	// hidden inputs the response carries, then override the control fields.
 	data = url.Values{}
-	data.Set("pageid", "383")
+	for name, val := range parseHiddenInputs(bodyBytes) {
+		data.Set(name, val)
+	}
+	data.Set("pageid", "388")
 	data.Set("CSRFToken", csrfToken)
-	data.Set("B8ea", "")
-	data.Set("B8eb", "")
 	data.Set("hidden_certificate_process_control", "2")
 	data.Set("hidden_certificate_idx", id)
 

@@ -70,8 +70,8 @@ func (p *printer) UploadNewCert(keyPem, certPem []byte) (string, error) {
 	var formDataBuffer bytes.Buffer
 	formWriter := multipart.NewWriter(&formDataBuffer)
 
-	// make form fields
-	err = formWriter.WriteField("pageid", "390")
+	// make form fields (MFC-L2750DW field names)
+	err = formWriter.WriteField("pageid", "395")
 	if err != nil {
 		return "", fmt.Errorf("printer: upload: failed to write form (%w)", err)
 	}
@@ -81,12 +81,12 @@ func (p *printer) UploadNewCert(keyPem, certPem []byte) (string, error) {
 		return "", fmt.Errorf("printer: upload: failed to write form (%w)", err)
 	}
 
-	err = formWriter.WriteField("B8ea", "")
+	err = formWriter.WriteField("Bb0a", "")
 	if err != nil {
 		return "", fmt.Errorf("printer: upload: failed to write form (%w)", err)
 	}
 
-	err = formWriter.WriteField("B8f8", "")
+	err = formWriter.WriteField("Bb18", "")
 	if err != nil {
 		return "", fmt.Errorf("printer: upload: failed to write form (%w)", err)
 	}
@@ -96,7 +96,7 @@ func (p *printer) UploadNewCert(keyPem, certPem []byte) (string, error) {
 		return "", fmt.Errorf("printer: upload: failed to write form (%w)", err)
 	}
 
-	p12W, err := formWriter.CreateFormFile("B820", "certkey.p12")
+	p12W, err := formWriter.CreateFormFile("Ba40", "certkey.p12")
 	if err != nil {
 		return "", fmt.Errorf("printer: upload: failed to write form (%w)", err)
 	}
@@ -106,7 +106,7 @@ func (p *printer) UploadNewCert(keyPem, certPem []byte) (string, error) {
 		return "", fmt.Errorf("printer: upload: failed to write form (%w)", err)
 	}
 
-	err = formWriter.WriteField("B821", "")
+	err = formWriter.WriteField("Ba41", "")
 	if err != nil {
 		return "", fmt.Errorf("printer: upload: failed to write form (%w)", err)
 	}
