@@ -21,6 +21,20 @@ func TestModelFieldMaps(t *testing.T) {
 			},
 			del: deleteFields{pageID: "383", empty1: "B8ea", empty2: "B8fc"},
 		},
+		"MFC-L2750DW": {
+			name: "MFC-L2750DW",
+			imp:  importFields{pageID: "395", empty1: "Bb0a", empty2: "Bb18", file: "Ba40", passwd: "Ba41"},
+			activate: activateFields{
+				pageID:   "326",
+				dropdown: "Bb23",
+				protocols: map[string]string{
+					"Ba8c": "1", "Ba8d": "1", "Ba9e": "1", "ipp_ssl_used": "",
+					"Ba9f": "1", "Baa0": "1", "Ba7d": "1", "Bb20": "", "Bb21": "", "Bb3d": "0",
+				},
+				httpPageMode: "5",
+			},
+			del: deleteFields{pageID: "388", empty1: "Bb0a", empty2: "Bb1c"},
+		},
 	}
 
 	for name, expect := range want {

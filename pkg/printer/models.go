@@ -85,6 +85,40 @@ var models = map[string]model{
 			empty2: "B8fc",
 		},
 	},
+
+	// Brother MFC-L2750DW laser MFP.
+	"MFC-L2750DW": {
+		name: "MFC-L2750DW",
+		imp: importFields{
+			pageID: "395",
+			empty1: "Bb0a",
+			empty2: "Bb18",
+			file:   "Ba40",
+			passwd: "Ba41",
+		},
+		activate: activateFields{
+			pageID:   "326",
+			dropdown: "Bb23",
+			protocols: map[string]string{
+				"Ba8c":         "1", // Web Based Management HTTPS (443)
+				"Ba8d":         "1", // Web Based Management HTTP  (80)
+				"Ba9e":         "1", // IPP HTTPS (443)
+				"ipp_ssl_used": "",  // IPP secure helper (submitted empty)
+				"Ba9f":         "1", // IPP HTTP (80)
+				"Baa0":         "1", // IPP HTTP (631)
+				"Ba7d":         "1", // Web Services HTTP
+				"Bb20":         "",
+				"Bb21":         "",
+				"Bb3d":         "0",
+			},
+			httpPageMode: "5",
+		},
+		del: deleteFields{
+			pageID: "388",
+			empty1: "Bb0a",
+			empty2: "Bb1c",
+		},
+	},
 }
 
 // lookupModel returns the field map for the named model, or an error listing

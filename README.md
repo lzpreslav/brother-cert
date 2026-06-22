@@ -14,6 +14,7 @@ Currently supported (`--model`):
 | `--model` value | Notes |
 | --- | --- |
 | `MFC-L2710DW` | The model upstream targets (default). |
+| `MFC-L2750DW` | Laser MFP. |
 
 To add another model, capture its certificate import / activate / delete form fields (e.g. from a browser
 HAR) and register them in `pkg/printer/models.go`. Everything else (login, CSRF token, cert-list parsing)
@@ -35,7 +36,7 @@ The tool will:
 
 Run the tool as:
 
-`./brother-cert --hostname printer.example.com --password secret --keyfile key.pem --certfile cert.pem [FLAGS]`
+`./brother-cert --hostname printer.example.com --password secret --model MFC-L2750DW --keyfile key.pem --certfile cert.pem [FLAGS]`
 
 Help can be viewed with:
 
