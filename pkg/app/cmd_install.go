@@ -124,18 +124,30 @@ func (app *app) cmdInstallCertAndReset(_ context.Context, args []string) error {
 		// use https now (even if user originally said not to, since cert is installed)
 		printerCfg.UseHttp = false
 
-		// must login again due to the restart
-		print, err = printer.NewPrinter(printerCfg)
-		if err != nil {
-			return errors.New("main: failed to reconnect to printer")
+		// Immediately after the reboot the printer's session is flaky: login
+		// succeeds (an AuthCookie is issued) but the next request can still 302
+		// back to the login page until the device fully settles. Retry the
+		// reconnect + delete a few times before giving up.
+		const deleteAttempts = 5
+		var delErr error
+		for attempt := 1; attempt <= deleteAttempts; attempt++ {
+			print, err = printer.NewPrinter(printerCfg)
+			if err != nil {
+				delErr = fmt.Errorf("reconnect failed: %w", err)
+			} else {
+				app.stdLogger.Printf("main: deleting old cert (id: %s), attempt %d/%d ...", oldCertId, attempt, deleteAttempts)
+				delErr = print.DeleteCert(oldCertId)
+				if delErr == nil {
+					break
+				}
+			}
+			if attempt < deleteAttempts {
+				app.stdLogger.Printf("main: delete attempt %d failed (%v); waiting 20s before retry", attempt, delErr)
+				time.Sleep(20 * time.Second)
+			}
 		}
-		app.stdLogger.Println("main: reconnected to printer")
-
-		// do delete of old cert
-		app.stdLogger.Printf("main: deleting old cert (id: %s) ...", oldCertId)
-		err = print.DeleteCert(oldCertId)
-		if err != nil {
-			return fmt.Errorf("main: failed to delete cert (id: %s) (%w)", oldCertId, err)
+		if delErr != nil {
+			return fmt.Errorf("main: failed to delete cert (id: %s) after %d attempts (%w)", oldCertId, deleteAttempts, delErr)
 		}
 
 		app.stdLogger.Printf("main: old cert (id: %s) deleted", oldCertId)
