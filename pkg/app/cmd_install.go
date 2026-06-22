@@ -50,6 +50,11 @@ func (app *app) cmdInstallCertAndReset(_ context.Context, args []string) error {
 		return err
 	}
 
+	httpsOnly := app.config.httpsOnly != nil && *app.config.httpsOnly
+	if httpsOnly {
+		app.stdLogger.Println("WARNING: --https-only flag set, the printer's plain-HTTP protocols will be disabled after install")
+	}
+
 	// make printer (which includes login)
 	printerCfg := printer.Config{
 		Hostname:      *app.config.hostname,
@@ -58,6 +63,7 @@ func (app *app) cmdInstallCertAndReset(_ context.Context, args []string) error {
 		UseHttp:       useHttp,
 		UserAgent:     fmt.Sprintf("brother-cert/%s (%s; %s)", appVersion, runtime.GOOS, runtime.GOARCH),
 		InsecureHTTPS: insecureHTTPS,
+		HttpsOnly:     httpsOnly,
 	}
 
 	print, err := printer.NewPrinter(printerCfg)

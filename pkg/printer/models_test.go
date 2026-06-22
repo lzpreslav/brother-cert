@@ -31,6 +31,7 @@ func TestModelFieldMaps(t *testing.T) {
 					"Ba8c": "1", "Ba8d": "1", "Ba9e": "1", "ipp_ssl_used": "",
 					"Ba9f": "1", "Baa0": "1", "Ba7d": "1", "Bb20": "", "Bb21": "", "Bb3d": "0",
 				},
+				insecure:     []string{"Ba8d", "Ba9f", "Baa0", "Ba7d"},
 				httpPageMode: "5",
 			},
 			del: deleteFields{pageID: "388", empty1: "Bb0a", empty2: "Bb1c"},

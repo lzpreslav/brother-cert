@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 )
 
@@ -78,7 +79,12 @@ func (p *printer) SetActiveCert(id string) error {
 	// as "off" by the firmware, so only flipping the HTTPS box (as upstream
 	// does) would risk disabling HTTP/IPP/WebServices. Re-assert each protocol
 	// toggle this model exposes so the only change is the certificate.
+	// When httpsOnly is set, omit the plain-HTTP toggles so the firmware
+	// disables them, leaving only the HTTPS services.
 	for name, val := range act.protocols {
+		if p.httpsOnly && slices.Contains(act.insecure, name) {
+			continue
+		}
 		data.Set(name, val)
 	}
 

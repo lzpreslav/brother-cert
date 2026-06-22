@@ -12,6 +12,7 @@ type printer struct {
 	httpClient *http.Client
 	baseUrl    string
 	model      model
+	httpsOnly  bool
 }
 
 // PrinterConfig contains the information necessary to create a printer
@@ -23,6 +24,10 @@ type Config struct {
 	UserAgent     string
 	UseHttp       bool
 	InsecureHTTPS bool
+	// HttpsOnly, when set, makes the activate step disable the printer's plain
+	// HTTP protocols (HTTP, IPP-over-HTTP, Web Services) so only the HTTPS
+	// services remain after the certificate is installed.
+	HttpsOnly bool
 }
 
 // custom transport to add User-Agent
@@ -79,8 +84,9 @@ func NewPrinter(cfg Config) (*printer, error) {
 				insecureHTTPS: cfg.InsecureHTTPS,
 			},
 		},
-		baseUrl: baseUrl,
-		model:   m,
+		baseUrl:   baseUrl,
+		model:     m,
+		httpsOnly: cfg.HttpsOnly,
 	}
 
 	// login & get cookie

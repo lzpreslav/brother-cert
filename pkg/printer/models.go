@@ -34,6 +34,11 @@ type activateFields struct {
 	// map is name->value (value "1" to enable, "" / "0" where the firmware
 	// expects an empty/zero companion field).
 	protocols map[string]string
+	// insecure lists the subset of protocols keys that enable a plain-HTTP
+	// service (HTTP, IPP-over-HTTP, Web Services). When the printer is created
+	// with HttpsOnly, these keys are omitted from the submission so the
+	// firmware disables them, leaving only the HTTPS services.
+	insecure []string
 	// httpPageMode: 4 == keep other secure protocols as-is, 5 == also activate
 	// them. Submitted in the confirmation step.
 	httpPageMode string
@@ -110,6 +115,12 @@ var models = map[string]model{
 				"Bb20":         "",
 				"Bb21":         "",
 				"Bb3d":         "0",
+			},
+			insecure: []string{
+				"Ba8d", // Web Based Management HTTP (80)
+				"Ba9f", // IPP HTTP (80)
+				"Baa0", // IPP HTTP (631)
+				"Ba7d", // Web Services HTTP
 			},
 			httpPageMode: "5",
 		},

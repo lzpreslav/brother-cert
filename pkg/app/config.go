@@ -25,9 +25,10 @@ type keyCertPemCfg struct {
 
 // app's config options from user
 type config struct {
-	hostname *string
-	password *string
-	model    *string
+	hostname  *string
+	password  *string
+	model     *string
+	httpsOnly *bool
 	keyCertPemCfg
 	http     *bool
 	insecure *bool
@@ -45,6 +46,7 @@ func (app *app) getConfig() error {
 	cfg.hostname = rootFlags.StringLong("hostname", "", "the hostname of the remote printer")
 	cfg.password = rootFlags.StringLong("password", "", "the password to login to the remote printer")
 	cfg.model = rootFlags.StringLong("model", "MFC-L2710DW", "the printer model (selects the Web Based Management form field map)")
+	cfg.httpsOnly = rootFlags.BoolLong("https-only", "after installing the cert, disable the printer's plain-HTTP protocols (HTTP, IPP-over-HTTP, Web Services) leaving only HTTPS")
 	cfg.keyPemFilePath = rootFlags.StringLong("keyfile", "", "path and filename of the rsa-2048 key in pem format")
 	cfg.certPemFilePath = rootFlags.StringLong("certfile", "", "path and filename of the certificate in pem format")
 	cfg.keyPem = rootFlags.StringLong("keypem", "", "string of the rsa-2048 key in pem format")

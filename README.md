@@ -38,6 +38,15 @@ Run the tool as:
 
 `./brother-cert --hostname printer.example.com --password secret --model MFC-L2750DW --keyfile key.pem --certfile cert.pem [FLAGS]`
 
+### `--https-only`
+
+By default the activate step re-asserts every protocol the model currently
+exposes, so installing the certificate changes nothing but the certificate.
+Pass `--https-only` to instead disable the printer's plain-HTTP protocols
+(HTTP, IPP-over-HTTP, Web Services) during activation, leaving only the HTTPS
+services. Only models with a protocol classification (currently `MFC-L2750DW`)
+are affected; for others the flag is a no-op.
+
 Help can be viewed with:
 
 `./brother-cert --help`
