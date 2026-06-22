@@ -67,26 +67,20 @@ func (p *printer) SetActiveCert(id string) error {
 		return err
 	}
 
-	// submit initial form to change the cert (MFC-L2750DW field names)
+	// submit initial form to change the cert (per-model field names)
+	act := p.model.activate
 	data := url.Values{}
-	data.Set("pageid", "326")
+	data.Set("pageid", act.pageID)
 	data.Set("CSRFToken", csrfToken)
-	// certificate dropdown (<select name="Bb23">)
-	data.Set("Bb23", id)
+	// certificate dropdown (<select name=...>)
+	data.Set(act.dropdown, id)
 	// Preserve ALL currently-enabled protocols. An absent checkbox is treated
 	// as "off" by the firmware, so only flipping the HTTPS box (as upstream
-	// does) would risk disabling HTTP/IPP/WebServices. The L2750DW ships these
-	// enabled; we re-assert them so the only change is the certificate.
-	data.Set("Ba8c", "1")        // Web Based Management HTTPS (443)
-	data.Set("Ba8d", "1")        // Web Based Management HTTP  (80)
-	data.Set("Ba9e", "1")        // IPP HTTPS (443)
-	data.Set("ipp_ssl_used", "") // IPP secure helper (submitted empty)
-	data.Set("Ba9f", "1")        // IPP HTTP (80)
-	data.Set("Baa0", "1")        // IPP HTTP (631)
-	data.Set("Ba7d", "1")        // Web Services HTTP
-	data.Set("Bb20", "")
-	data.Set("Bb21", "")
-	data.Set("Bb3d", "0")
+	// does) would risk disabling HTTP/IPP/WebServices. Re-assert each protocol
+	// toggle this model exposes so the only change is the certificate.
+	for name, val := range act.protocols {
+		data.Set(name, val)
+	}
 
 	// get url & set path
 	u, err := url.ParseRequestURI(p.baseUrl)
@@ -128,11 +122,11 @@ func (p *printer) SetActiveCert(id string) error {
 
 	// submit confirmation (& reboot now)
 	data = url.Values{}
-	data.Set("pageid", "326")
+	data.Set("pageid", act.pageID)
 	data.Set("CSRFToken", csrfToken)
 	// 4 == do NOT activate other secure protos
 	// 5 == DO activate other secure protos
-	data.Set("http_page_mode", "5")
+	data.Set("http_page_mode", act.httpPageMode)
 
 	// get url & set path
 	u, err = url.ParseRequestURI(p.baseUrl)

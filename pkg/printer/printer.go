@@ -11,6 +11,7 @@ import (
 type printer struct {
 	httpClient *http.Client
 	baseUrl    string
+	model      model
 }
 
 // PrinterConfig contains the information necessary to create a printer
@@ -18,6 +19,7 @@ type printer struct {
 type Config struct {
 	Hostname      string
 	Password      string
+	Model         string
 	UserAgent     string
 	UseHttp       bool
 	InsecureHTTPS bool
@@ -50,6 +52,12 @@ func NewPrinter(cfg Config) (*printer, error) {
 		baseUrl = "http://" + cfg.Hostname
 	}
 
+	// resolve the per-model form field map
+	m, err := lookupModel(cfg.Model)
+	if err != nil {
+		return nil, err
+	}
+
 	// make cookie jar
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -72,6 +80,7 @@ func NewPrinter(cfg Config) (*printer, error) {
 			},
 		},
 		baseUrl: baseUrl,
+		model:   m,
 	}
 
 	// login & get cookie

@@ -75,12 +75,13 @@ func (p *printer) DeleteCert(id string) error {
 		return err
 	}
 
-	// first delete form (MFC-L2750DW field names)
+	// first delete form (per-model field names)
+	del := p.model.del
 	data := url.Values{}
-	data.Set("pageid", "388")
+	data.Set("pageid", del.pageID)
 	data.Set("CSRFToken", csrfToken)
-	data.Set("Bb0a", "")
-	data.Set("Bb1c", "")
+	data.Set(del.empty1, "")
+	data.Set(del.empty2, "")
 	data.Set("hidden_certificate_process_control", "1")
 	data.Set("hidden_certificate_idx", id)
 
@@ -129,7 +130,7 @@ func (p *printer) DeleteCert(id string) error {
 	for name, val := range parseHiddenInputs(bodyBytes) {
 		data.Set(name, val)
 	}
-	data.Set("pageid", "388")
+	data.Set("pageid", del.pageID)
 	data.Set("CSRFToken", csrfToken)
 	data.Set("hidden_certificate_process_control", "2")
 	data.Set("hidden_certificate_idx", id)

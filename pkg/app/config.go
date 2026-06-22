@@ -27,6 +27,7 @@ type keyCertPemCfg struct {
 type config struct {
 	hostname *string
 	password *string
+	model    *string
 	keyCertPemCfg
 	http     *bool
 	insecure *bool
@@ -43,6 +44,7 @@ func (app *app) getConfig() error {
 
 	cfg.hostname = rootFlags.StringLong("hostname", "", "the hostname of the remote printer")
 	cfg.password = rootFlags.StringLong("password", "", "the password to login to the remote printer")
+	cfg.model = rootFlags.StringLong("model", "MFC-L2710DW", "the printer model (selects the Web Based Management form field map)")
 	cfg.keyPemFilePath = rootFlags.StringLong("keyfile", "", "path and filename of the rsa-2048 key in pem format")
 	cfg.certPemFilePath = rootFlags.StringLong("certfile", "", "path and filename of the certificate in pem format")
 	cfg.keyPem = rootFlags.StringLong("keypem", "", "string of the rsa-2048 key in pem format")

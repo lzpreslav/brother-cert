@@ -54,6 +54,7 @@ func (app *app) cmdInstallCertAndReset(_ context.Context, args []string) error {
 	printerCfg := printer.Config{
 		Hostname:      *app.config.hostname,
 		Password:      *app.config.password,
+		Model:         *app.config.model,
 		UseHttp:       useHttp,
 		UserAgent:     fmt.Sprintf("brother-cert/%s (%s; %s)", appVersion, runtime.GOOS, runtime.GOARCH),
 		InsecureHTTPS: insecureHTTPS,
